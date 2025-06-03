@@ -8,12 +8,12 @@ import os
 from keep_alive import run
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-if not token:
+if not TOKEN:
     print("❌ DISCORD_TOKEN is missing from environment variables!")
 else:
     print("✅ Token found, starting bot...")
     run()
-    bot.run(token)
+    bot.run(TOKEN)
 GUILD_ID = 1379030612949860398
 ANNOUNCE_CHANNEL_ID = 1379031561718075402
 
