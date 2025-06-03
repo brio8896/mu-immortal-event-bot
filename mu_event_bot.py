@@ -109,6 +109,7 @@ event_definitions = [
         "fixed_times": ["12:00", "21:00"],
         "open_minutes": 150,  # 2.5 hours = 150 minutes
         "days": range(7),     # every day
+        "unlock_after_days": 15,   # from May 20
     }
 ]
 
@@ -142,10 +143,9 @@ async def build_upcoming_embed(upcoming, days_since_open, now_uk):
     for event in event_definitions:
         if event.get("is_buff"):
             continue
-        if event[
-                "name"] == "Cross-Server Dragon" and days_since_open < event.get(
-                    "unlock_after_days", 0):
+        if event.get("unlock_after_days", 0) and days_since_open < event["unlock_after_days"]:
             continue
+
 
         duration = event["open_minutes"]
         for t in generate_event_times(event, now_uk.date()):
@@ -213,15 +213,24 @@ async def build_upcoming_embed(upcoming, days_since_open, now_uk):
                         inline=False)
 
     # ── Locked Events ──
-    unlock_date = datetime(
-        2025, 5, 20,
-        tzinfo=pytz.timezone("Europe/London")) + timedelta(days=25)
-    if now_uk < unlock_date:
-        days_left = (unlock_date - now_uk).days
-        embed.add_field(
-            name="🔒 Locked Events",
-            value=f"• Cross-Server Dragon unlocks in {days_left} days",
-            inline=False)
+    locked_lines = []
+    server_start = datetime(2025, 5, 20, tzinfo=pytz.timezone("Europe/London"))
+
+    for event in event_definitions:
+        if event.get("is_buff"):
+            continue
+
+        if "unlock_after_days" in event:
+            unlock_date = server_start + timedelta(days=event["unlock_after_days"])
+            if now_uk < unlock_date:
+                days_left = (unlock_date - now_uk).days
+                locked_lines.append(f"• {event['name']} unlocks in {days_left} days")
+
+    if locked_lines:
+        embed.add_field(name="🔒 Locked Events",
+                        value="\n".join(locked_lines),
+                        inline=False)
+
 
     embed.set_footer(text="All times auto-adjust to your local time")
     return embed
@@ -266,10 +275,9 @@ async def event_reminder():
             continue
         if weekday not in event["days"]:
             continue
-        if event[
-                "name"] == "Cross-Server Dragon" and days_since_open < event.get(
-                    "unlock_after_days", 0):
+        if event.get("unlock_after_days", 0) and days_since_open < event["unlock_after_days"]:
             continue
+    
 
         times_today = generate_event_times(event, now_uk.date())
         times_tomorrow = generate_event_times(event, tomorrow)
@@ -409,10 +417,9 @@ async def events(ctx):
             continue
         if weekday not in event["days"]:
             continue
-        if event[
-                "name"] == "Cross-Server Dragon" and days_since_open < event.get(
-                    "unlock_after_days", 0):
+        if event.get("unlock_after_days", 0) and days_since_open < event["unlock_after_days"]:
             continue
+
 
         times_today = generate_event_times(event, now_uk.date())
         times_tomorrow = generate_event_times(event, tomorrow)
