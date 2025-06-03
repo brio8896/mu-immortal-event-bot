@@ -7,8 +7,6 @@ import math
 import os
 from keep_alive import run
 
-run()
-
 TOKEN = os.getenv("DISCORD_TOKEN")
 if not token:
     print("❌ DISCORD_TOKEN is missing from environment variables!")
