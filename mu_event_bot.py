@@ -115,7 +115,7 @@ event_definitions = [
 
 
 async def build_upcoming_embed(upcoming, days_since_open, now_uk):
-    embed = discord.Embed(title="🗓️ MU Immortal Events",
+    embed = discord.Embed(title="MU Immortal Events",
                           color=discord.Color.blurple())
 
     # ── Active Buffs ──
@@ -219,18 +219,25 @@ async def build_upcoming_embed(upcoming, days_since_open, now_uk):
     for event in event_definitions:
         if event.get("is_buff"):
             continue
-
         if "unlock_after_days" in event:
             unlock_date = server_start + timedelta(days=event["unlock_after_days"])
-            if now_uk < unlock_date:
-                days_left = (unlock_date - now_uk).days
-                locked_lines.append(f"• {event['name']} unlocks in {days_left} days")
+            delta = unlock_date - now_uk
+
+            if delta.total_seconds() > 0:
+                # More than 24h remaining?
+                if delta.days > 0:
+                    locked_lines.append(f"• {event['name']} unlocks in {delta.days} days")
+                else:
+                    hours = delta.seconds // 3600
+                    minutes = (delta.seconds % 3600) // 60
+                    locked_lines.append(f"• {event['name']} unlocks in {hours} h {minutes} m")
 
     if locked_lines:
-        embed.add_field(name="🔒 Locked Events",
-                        value="\n".join(locked_lines),
-                        inline=False)
-
+        embed.add_field(
+            name="🔒 Locked Events",
+            value="\n".join(locked_lines),
+            inline=False
+        )
 
     embed.set_footer(text="All times auto-adjust to your local time")
     return embed
