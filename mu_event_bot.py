@@ -8,12 +8,6 @@ import os
 from keep_alive import run
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-if not TOKEN:
-    print("❌ DISCORD_TOKEN is missing from environment variables!")
-else:
-    print("✅ Token found, starting bot...")
-    run()
-    bot.run(TOKEN)
 GUILD_ID = 1379030612949860398
 ANNOUNCE_CHANNEL_ID = 1379031561718075402
 
@@ -432,11 +426,13 @@ async def events(ctx):
             for event_time in times_tomorrow:
                 upcoming["Tomorrow"].append((event["name"], event_time))
 
-    # This is the key: pass user ID here to get their timezone in the embed title
-    await post_upcoming_embed(upcoming,
-                              days_since_open,
-                              now_uk,
-                              user_id=ctx.author.id)
+embed = await build_upcoming_embed(upcoming, days_since_open, now_uk)
+await ctx.send(embed=embed)
 
 
-bot.run(TOKEN)
+if not TOKEN:
+    print("❌ DISCORD_TOKEN is missing from environment variables!")
+else:
+    print("✅ Token found, starting bot...")
+    run()
+    bot.run(TOKEN)
