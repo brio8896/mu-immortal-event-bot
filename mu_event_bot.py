@@ -426,8 +426,8 @@ async def events(ctx):
             for event_time in times_tomorrow:
                 upcoming["Tomorrow"].append((event["name"], event_time))
 
-embed = await build_upcoming_embed(upcoming, days_since_open, now_uk)
-await ctx.send(embed=embed)
+    embed = await build_upcoming_embed(upcoming, days_since_open, now_uk)
+    await ctx.send(embed=embed)
 
 
 if not TOKEN:
