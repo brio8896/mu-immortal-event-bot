@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import json
 import math
 import os
-from keep_alive import run
+from keep_alive import keep_alive
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 GUILD_ID = 1379030612949860398
@@ -434,5 +434,6 @@ if not TOKEN:
     print("❌ DISCORD_TOKEN is missing from environment variables!")
 else:
     print("✅ Token found, starting bot...")
-    run()
+    keep_alive()
     bot.run(TOKEN)
+
