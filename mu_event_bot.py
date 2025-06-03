@@ -102,6 +102,13 @@ event_definitions = [
         "active_from": "00:00",
         "active_until": "08:00",
         "days": range(7),
+    },
+    # Cross Server 3v3
+    {
+        "name": "Cross Server 3v3",
+        "fixed_times": ["12:00", "21:00"],
+        "open_minutes": 150,  # 2.5 hours = 150 minutes
+        "days": range(7),     # every day
     }
 ]
 
