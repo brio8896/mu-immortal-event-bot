@@ -110,7 +110,7 @@ event_definitions = [
         "open_minutes": 150,  # 2.5 hours = 150 minutes
         "days": range(7),     # every day
         "unlock_after_days": 15,   # from May 20
-    }
+    },
     # Descension of Gods
     {
         "name": "Descension of Gods",
